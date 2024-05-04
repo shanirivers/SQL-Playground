@@ -21,26 +21,27 @@ def main():
     if choice == "Home":
         st.subheader('Home')
         
-        col1, col2 = st.columns(2)
+        with st.form(key='query_form'):
+            exclude_commands = ["create", "drop", "insert", "update", "delete", "alter", "truncate", "grant", "revoke", "commit", "rollback", "savepoint", "merge", "rename", "replace", "set", "show", "use", "analyze", "attach", "backup", "checkpoint", "copy", "detach", "explain", "pragma", "reindex", "restore", "vacuum", "load", "unload", "lock", "unlock", "kill", "shutdown", "prepare", "execute", "deallocate", "begin", "end", "declare", "call", "do", "handler", "load", "save", "source", "quit", "exit", "connect", "disconnect", "quit", "exit", "go"]
 
-        with col1:
-            with st.form(key='query_form'):
-                raw_code = st.text_area('Enter your SQL query here:')
-                submit_code = st.form_submit_button(label='Execute Query')
+            raw_code = st.text_area('Enter your SQL query here:')
+            # if any(cmds in raw_code for cmds in exclude_commands):
+            #     st.warning('You are not allowed to execute this command', icon="⚠️")
+            # else:
+            submit_code = st.form_submit_button(label='Execute Query')
 
-        with col2:
+   
             if submit_code:
                 st.info("Query Submitted")
                 st.code(raw_code)
 
                 # Prettify the results
-
                 with st.expander("Pretty Table"):
+                    query_results = sql_executer(raw_code)
                     query_df = pd.DataFrame(query_results)
                     st.dataframe(query_df)
 
                 # Results as JSON
-                query_results = sql_executer(raw_code)
                 with st.expander("Results"):
                     st.write(query_results)
 
@@ -53,9 +54,11 @@ def main():
     else: 
         st.subheader('Scheme')
         st.text('The scheme for the Chinook database can be found on Github: https://github.com/lerocha/chinook-database/tree/master')
-        # query = "SELECT * FROM sqlite_master WHERE type='table';"
-        # tables = sql_executer(query)
-        # st.write(tables)
+        query = "SELECT * FROM sqlite_master WHERE type='table';"
+        tables = sql_executer(query)
+        st.write(tables)
+        
+        st.write('The Chinook database is a sample database available for SQL Server, Oracle, MySQL, etc. It can be used to learn and practice SQL queries.')
 
 if __name__ == '__main__':
 	main()
