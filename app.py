@@ -40,7 +40,7 @@ def main():
                     query_results = sql_executer(raw_code)
                     query_df = pd.DataFrame(query_results)
                     st.dataframe(query_df)
-
+ 
                 # Results as JSON
                 with st.expander("Results"):
                     st.write(query_results)
